@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&family=Dancing+Script:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#c8a45a;--gold-light:#e8c878;--gold-dim:rgba(200,164,90,0.18);--emerald:#2d5a27;--emerald-dark:#1a3a18;--bg:#0d0a06;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);min-height:100vh;font-family:'IM Fell English',serif;overflow-x:hidden;color:#e8d5a8;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(45,90,39,0.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(200,164,90,0.05) 0%,transparent 40%);pointer-events:none;z-index:0;}
+.stars{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.star{position:absolute;background:rgba(200,164,90,0.4);border-radius:50%;animation:twinkle var(--d,3s) ease-in-out infinite;animation-delay:var(--delay,0s);}
+@keyframes twinkle{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.8;transform:scale(1.5)}}
+.page-wrapper{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:46px 18px 60px;}
+.header{text-align:center;margin-bottom:36px;animation:fadeDown .9s ease forwards;opacity:0;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:translateY(0)}}
+.header-ornament{color:var(--gold);font-size:15px;letter-spacing:12px;margin-bottom:12px;opacity:.6;}
+.header h1{font-family:'Cinzel Decorative',serif;font-size:clamp(18px,4vw,32px);font-weight:700;color:var(--gold-light);letter-spacing:4px;text-shadow:0 0 40px rgba(200,164,90,.3);margin-bottom:6px;}
+.header .subtitle{font-style:italic;color:rgba(200,164,90,.55);font-size:13px;letter-spacing:2px;}
+.header-line{display:flex;align-items:center;gap:16px;margin-top:16px;justify-content:center;}
+.header-line::before,.header-line::after{content:'';height:1px;width:70px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
+.header-gem{width:7px;height:7px;background:#4a7a42;transform:rotate(45deg);box-shadow:0 0 8px rgba(74,122,66,.6);}
+.quiz-wrap{width:100%;max-width:680px;animation:fadeUp .9s ease forwards .25s;opacity:0;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.panel{background:rgba(22,14,6,.88);border:1px solid var(--gold-dim);border-radius:2px;padding:34px 32px;position:relative;backdrop-filter:blur(4px);}
+.panel::before{content:'';position:absolute;inset:5px;border:1px solid rgba(200,164,90,.07);border-radius:1px;pointer-events:none;}
+.corner{position:absolute;width:18px;height:18px;border-color:rgba(200,164,90,.35);border-style:solid;}
+.tl{top:7px;left:7px;border-width:1px 0 0 1px}.tr{top:7px;right:7px;border-width:1px 1px 0 0}
+.bl{bottom:7px;left:7px;border-width:0 0 1px 1px}.br{bottom:7px;right:7px;border-width:0 1px 1px 0}
+.panel-title{font-family:'Cinzel',serif;font-size:10px;font-weight:600;color:var(--gold);letter-spacing:4px;text-transform:uppercase;margin-bottom:22px;display:flex;align-items:center;gap:10px;}
+.panel-title::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(200,164,90,.25),transparent);}
+.theme-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.theme-btn{background:transparent;border:1px solid rgba(200,164,90,.2);border-radius:1px;color:rgba(200,164,90,.6);font-family:'Cinzel',serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:7px 13px;cursor:pointer;transition:all .25s;}
+.theme-btn:hover,.theme-btn.sel{border-color:var(--gold);color:var(--gold-light);background:rgba(200,164,90,.06);}
+.start-btn{width:100%;margin-top:18px;padding:13px;background:linear-gradient(135deg,var(--emerald-dark) 0%,var(--emerald) 50%,var(--emerald-dark) 100%);border:1px solid rgba(200,164,90,.28);border-radius:1px;color:var(--gold-light);font-family:'Cinzel',serif;font-size:10px;font-weight:600;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;}
+.start-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(200,164,90,.08),transparent);transform:translateX(-100%);transition:transform .5s;}
+.start-btn:hover::before{transform:translateX(100%)}
+.start-btn:hover{border-color:rgba(200,164,90,.55);box-shadow:0 0 20px rgba(45,90,39,.25);}
+.progress-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;}
+.progress-label{font-family:'Cinzel',serif;font-size:9px;color:rgba(200,164,90,.5);letter-spacing:3px;text-transform:uppercase;}
+.progress-count{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);}
+.progress-track{height:2px;background:rgba(200,164,90,.12);border-radius:1px;margin-bottom:26px;overflow:hidden;}
+.progress-fill{height:100%;background:linear-gradient(to right,var(--emerald),var(--gold));transition:width .5s ease;}
+.q-theme-tag{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,164,90,.45);margin-bottom:10px;}
+.q-text{font-family:'IM Fell English',serif;font-size:1.13rem;line-height:1.65;color:#f0ddb8;margin-bottom:22px;}
+.options{display:flex;flex-direction:column;gap:9px;}
+.opt{display:flex;align-items:flex-start;gap:11px;background:rgba(245,232,200,.03);border:1px solid rgba(200,164,90,.15);border-radius:1px;padding:11px 14px;cursor:pointer;transition:all .22s;font-family:'IM Fell English',serif;font-size:1rem;color:#d4bc8c;text-align:left;line-height:1.4;}
+.opt:hover:not(:disabled){border-color:rgba(200,164,90,.4);background:rgba(200,164,90,.05);color:#f0ddb8;}
+.opt:disabled{cursor:default;}
+.opt-letter{font-family:'Cinzel',serif;font-size:9px;color:rgba(200,164,90,.45);min-width:14px;margin-top:3px;letter-spacing:1px;}
+.opt.correct{border-color:#4a7a42;background:rgba(45,90,39,.18);color:#8ec98a;}
+.opt.wrong{border-color:#7a2a2a;background:rgba(90,30,30,.18);color:#c98a8a;}
+.opt.reveal{border-color:#4a7a42;background:rgba(45,90,39,.08);color:#8ec98a;}
+.tf-wrap{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.tf-btn{background:transparent;border:1px solid rgba(200,164,90,.15);border-radius:1px;color:rgba(200,164,90,.6);font-family:'Cinzel',serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;padding:14px;cursor:pointer;transition:all .22s;}
+.tf-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold-light);background:rgba(200,164,90,.05);}
+.tf-btn:disabled{cursor:default;}
+.tf-btn.correct{border-color:#4a7a42;background:rgba(45,90,39,.18);color:#8ec98a;}
+.tf-btn.wrong{border-color:#7a2a2a;background:rgba(90,30,30,.18);color:#c98a8a;}
+.tf-btn.reveal{border-color:#4a7a42;background:rgba(45,90,39,.08);color:#8ec98a;}
+.feedback{margin-top:16px;padding:13px 16px;border-left:2px solid;border-radius:1px;animation:fadeUp .25s ease;display:none;font-family:'IM Fell English',serif;font-size:.95rem;line-height:1.6;}
+.feedback.show{display:block;}
+.feedback.ok{border-color:#4a7a42;background:rgba(45,90,39,.1);color:#8ec98a;}
+.feedback.nok{border-color:#7a2a2a;background:rgba(90,30,30,.1);color:#c98a8a;}
+.feedback .verdict{font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;margin-bottom:5px;opacity:.7;}
+.feedback .lore{font-style:italic;color:rgba(232,200,120,.65);font-size:.9rem;margin-top:6px;border-top:1px solid rgba(200,164,90,.1);padding-top:7px;}
+.next-btn{width:100%;margin-top:14px;padding:11px;background:transparent;border:1px solid rgba(200,164,90,.22);border-radius:1px;color:rgba(200,164,90,.7);font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .25s;display:none;}
+.next-btn.show{display:block;animation:fadeUp .3s ease;}
+.next-btn:hover{border-color:var(--gold);color:var(--gold-light);background:rgba(200,164,90,.04);}
+.end-panel{text-align:center;}
+.end-score{font-family:'Cinzel Decorative',serif;font-size:clamp(42px,10vw,72px);color:var(--gold-light);text-shadow:0 0 40px rgba(200,164,90,.25);line-height:1;margin:6px 0;}
+.end-total{font-family:'Cinzel',serif;font-size:10px;color:rgba(200,164,90,.5);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.end-pips{display:flex;justify-content:center;gap:6px;margin-bottom:14px;}
+.pip{width:9px;height:9px;border-radius:0;transform:rotate(45deg);}
+.pip.ok{background:#4a7a42;box-shadow:0 0 6px rgba(74,122,66,.5);}
+.pip.nok{background:#5a2020;}
+.end-quote{font-style:italic;color:rgba(232,200,120,.6);font-size:.95rem;line-height:1.6;margin-bottom:20px;padding:0 10px;}
+.divider-end{display:flex;align-items:center;gap:14px;justify-content:center;margin:14px 0;}
+.divider-end::before,.divider-end::after{content:'';height:1px;width:60px;background:linear-gradient(to right,transparent,var(--gold),transparent);}
+.share-card{background:rgba(10,8,4,.6);border:1px solid rgba(200,164,90,.2);border-radius:1px;padding:14px 16px;margin-bottom:16px;text-align:left;}
+.share-label{font-family:'Cinzel',serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;color:rgba(200,164,90,.4);margin-bottom:8px;}
+.share-text{font-family:'Dancing Script',cursive;font-size:1rem;color:rgba(232,200,120,.75);line-height:1.6;word-break:break-all;white-space:pre-line;}
+.copy-btn{margin-top:10px;width:100%;padding:9px;background:transparent;border:1px solid rgba(200,164,90,.2);border-radius:1px;color:rgba(200,164,90,.6);font-family:'Cinzel',serif;font-size:8px;letter-spacing:3px;text-transform:uppercase;cursor:pointer;transition:all .25s;}
+.copy-btn:hover{border-color:var(--gold);color:var(--gold-light);}
+.copy-btn.copied{border-color:#4a7a42;color:#8ec98a;}
+.end-breakdown{text-align:left;margin-bottom:18px;}
+.bd-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid rgba(200,164,90,.08);font-size:.85rem;color:rgba(200,164,90,.55);}
+.bd-row span:first-child{flex:1;margin-right:10px;font-family:'IM Fell English',serif;}
+.bd-ok{color:#8ec98a;font-family:'Cinzel',serif;font-size:10px;}
+.bd-nok{color:#c98a8a;font-family:'Cinzel',serif;font-size:10px;}
+.btn-row{display:flex;gap:10px;}
+.restart-btn{flex:1;padding:12px;background:linear-gradient(135deg,var(--emerald-dark),var(--emerald),var(--emerald-dark));border:1px solid rgba(200,164,90,.28);border-radius:1px;color:var(--gold-light);font-family:'Cinzel',serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;cursor:pointer;transition:all .3s;}
+.restart-btn:hover{border-color:var(--gold);box-shadow:0 0 18px rgba(45,90,39,.25);}
+footer{margin-top:40px;font-family:'Cinzel',serif;font-size:9px;letter-spacing:3px;color:rgba(200,164,90,.25);text-align:center;}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="page-wrapper">
+<header class="header">
+  <div class="header-ornament">✦ ✦ ✦</div>
+  <h1>Chevaliers d'Émeraude</h1>
+  <p class="subtitle">Parchemin du Lore — Épreuves de Mémoire</p>
+  <div class="header-line"><div class="header-gem"></div></div>
+</header>
+<div class="quiz-wrap">
+  <div class="panel" id="panel-start">
+    <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+    <div class="panel-title">Choisir un thème</div>
+    <div class="theme-grid" id="theme-grid"></div>
+    <button class="start-btn" onclick="startQuiz()">⚜ &nbsp; Commencer l'épreuve</button>
+  </div>
+  <div class="panel" id="panel-quiz" style="display:none;">
+    <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+    <div class="progress-row">
+      <span class="progress-label">✦ Épreuve</span>
+      <span class="progress-count" id="prog-count">1 / 8</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill" style="width:0%"></div></div>
+    <div class="q-theme-tag" id="q-tag"></div>
+    <div class="q-text" id="q-text"></div>
+    <div id="answers-zone"></div>
+    <div class="feedback" id="feedback">
+      <div class="verdict" id="fb-verdict"></div>
+      <div id="fb-main"></div>
+      <div class="lore" id="fb-lore"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQ()">Question suivante →</button>
+  </div>
+  <div class="panel end-panel" id="panel-end" style="display:none;">
+    <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+    <div class="panel-title">Résultats du parchemin</div>
+    <div class="end-score" id="end-score">0</div>
+    <div class="end-total" id="end-total">/ 8 réponses justes</div>
+    <div class="end-pips" id="end-pips"></div>
+    <p class="end-quote" id="end-quote"></p>
+    <div class="share-card">
+      <div class="share-label">✦ Parchemin de résultat — à partager</div>
+      <div class="share-text" id="share-text"></div>
+      <button class="copy-btn" id="copy-btn" onclick="copyShare()">Copier le parchemin</button>
+    </div>
+    <div class="divider-end"><div class="header-gem"></div></div>
+    <div class="end-breakdown" id="end-breakdown"></div>
+    <div class="btn-row">
+      <button class="restart-btn" onclick="backToStart()">↺ Retour aux parchemins</button>
+    </div>
+  </div>
+</div>
+<footer>Royaume d'Émeraude — Enkidiev</footer>
+</div>
+<script>
+const starsEl=document.getElementById('stars');
+for(let i=0;i<80;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;width:${Math.random()<.3?2:1}px;height:${Math.random()<.3?2:1}px`;starsEl.appendChild(s);}
+
+const THEMES=[
+  {id:'monde',label:'Le Monde & l\'Ordre',questions:[
+    {type:'qcm',q:'Comment s\'appelle le monde dans lequel se déroule l\'histoire des Chevaliers d\'Émeraude ?',opts:['Eldarion','Enkidiev','Arménie','Sholian'],a:1,lore:'Enkidiev est le nom du monde — les royaumes qui le composent s\'étendent des terres côtières de Perle jusqu\'aux régions nordiques de Shola.'},
+    {type:'tf',q:'Le recrutement de nouveaux élèves par les Chevaliers d\'Émeraude n\'a lieu qu\'une seule fois dans l\'année, lors de la journée portes ouvertes.',a:false,lore:'Les recrutements ont lieu tout au long de l\'année — par l\'intermédiaire d\'envoyés du roi ou à l\'initiative des Chevaliers eux-mêmes. La journée portes ouvertes est réservée à ceux qui souhaitent se présenter d\'eux-mêmes.'},
+    {type:'qcm',q:'Dans quelle partie du château Armène, la servante en chef, travaille-t-elle principalement ?',opts:['La bibliothèque','La chapelle','Les cuisines','Les donjons'],a:2,lore:'Armène, la servante en chef, a pris en charge Kira dans les cuisines après que la reine Fan a confié l\'enfant au roi.'},
+    {type:'qcm',q:'Où se situe la tour d\'Elund, le magicien du château ?',opts:['Au-dessus des donjons','Au sommet d\'une tour accessible par des escaliers en spirale','Dans l\'aile ouest','Dans la bibliothèque'],a:1,lore:'Aelis a gravi les escaliers en spirale jusqu\'au sommet de la tour d\'Elund pour lui annoncer le feu dans le ciel. Le vieux magicien scrutait déjà le ciel à travers sa lunette astronomique.'},
+    {type:'tf',q:'Wellan est le chef des Chevaliers d\'Émeraude.',a:true,lore:'Wellan est désigné comme chef des Chevaliers d\'Émeraude. C\'est lui qui recadre la foule lors de l\'arrivée de la délégation de Shola, et qui intervient dans le couloir pour arrêter Corwin.'},
+    {type:'qcm',q:'Comment Alaric est-il qualifié dans les chroniques ?',opts:['Proche d\'un titan','Proche d\'un demi-géant','Le plus grand Chevalier de l\'histoire','Un géant du Nord'],a:1,lore:'Han-Yu était juchée sur les épaules d\'Alaric — un Chevalier à la stature imposante, proche d\'un demi-géant — et profitait des stands de marchands.'},
+    {type:'qcm',q:'Oromë est originaire de quel royaume ?',opts:['Rubis','Émeraude','Cristal','Shola'],a:3,lore:'Oromë, lui-même originaire de Shola et en qui la reine Fan semble placer une grande confiance, s\'est avancé pour lui offrir son bras et sa protection lors de l\'arrivée de la délégation.'},
+    {type:'tf',q:'La chapelle du château est un lieu que les Chevaliers utilisent régulièrement pour se recueillir.',a:true,lore:'Corwin est dans la chapelle depuis des heures en prière au début de la session. C\'est aussi là que Yavana prie ses dieux et reçoit un mauvais pressentiment lors de la session suivante.'}
+  ]},
+  {id:'royaumes',label:'Les Royaumes',questions:[
+    {type:'qcm',q:'L\'ancien roi d\'Argent a fui son royaume avec son fils Shill. Où se sont-ils installés ?',opts:['À Émeraude','À Rubis','À Shola','À Cristal'],a:2,lore:'Les villageois associaient la délégation en tuniques blanches au souvenir de la guerre menée jadis par l\'ancien roi d\'Argent — qui avait fui avec son fils Shill pour s\'installer à Shola.'},
+    {type:'qcm',q:'Quel fils de l\'ancien roi d\'Argent a instauré une paix fragile, et depuis combien de temps ?',opts:['Shill, depuis cinquante ans','Cull, depuis vingt ans','Shill, depuis vingt ans','Cull, depuis cent ans'],a:1,lore:'L\'ancien roi d\'Argent avait fui son royaume, laissant son autre fils Cull instaurer une paix fragile depuis maintenant vingt ans.'},
+    {type:'tf',q:'Fan est la reine de Cristal.',a:false,lore:'Fan est la reine de Shola. C\'est elle qui se déplace jusqu\'au château d\'Émeraude pour confier sa fille Kira au roi.'},
+    {type:'qcm',q:'Domitian Flavianus vient de quel royaume ?',opts:['Shola','Perle','Rubis','Cristal'],a:2,lore:'Domitian Flavianus vient de Rubis et œuvre à convaincre les sénateurs locaux d\'accorder davantage de pouvoir à l\'Église et à l\'Inquisition.'},
+    {type:'tf',q:'Le père de Bran est un noble d\'une ville frontière proche de Shola.',a:true,lore:'Han-Yu a appris l\'étonnement du père de Bran — noble d\'une ville frontière proche de Shola — à l\'annonce de l\'existence de Kira.'},
+    {type:'qcm',q:'Qui avait rédigé la lettre ancienne découverte aux archives, et que demandait-elle ?',opts:['Un roi de Shola — une armée','Un roi de Cristal — l\'enfant bleu','Un roi d\'Argent — un traité de paix','Un roi d\'Émeraude — une victoire'],a:1,lore:'Ichabod a présenté à Corwin une lettre rédigée par un ancien roi de Cristal suppliant le roi Jabe de lui amener "l\'enfant bleu", lors d\'invasions venues de l\'ouest par la mer, il y a plus de 500 ans.'},
+    {type:'qcm',q:'Bran avait ressenti un pressentiment sur de terribles événements à venir dans quel royaume ?',opts:['Shola','Argent','Rubis','Cristal'],a:3,lore:'Bran avait ressenti un pressentiment sur de terribles événements à venir sur Cristal. Son père l\'a cru et l\'a amené au château dans l\'espoir qu\'il devienne Chevalier pour empêcher ce malheur.'},
+    {type:'tf',q:'Xiao vient du même royaume que Han-Yu.',a:true,lore:'Han-Yu discute avec Xiao, originaire du même royaume qu\'elle, et avec qui elle s\'entend particulièrement bien.'}
+  ]},
+  {id:'personnages',label:'Les Chevaliers',questions:[
+    {type:'qcm',q:'Que faisait Corwin pendant les épreuves physiques de la journée portes ouvertes ?',opts:['Il observait depuis les remparts','Il était en prière dans la chapelle','Il entraînait des écuyers','Il fouillait les archives'],a:1,lore:'Corwin était dans la chapelle depuis des heures en prière au début de la session — c\'est là que Domitian Flavianus l\'a rejoint.'},
+    {type:'qcm',q:'Que faisait exactement la jeune voleuse repérée par Maximus dans la foule ?',opts:['Elle volait des étals de marchands','Elle faisait les poches des passants','Elle tentait d\'entrer en cachette','Elle dérobait des armes'],a:1,lore:'Maximus surveillait discrètement les environs et a intercepté une jeune enfant qui profitait de l\'agitation pour faire les poches des passants.'},
+    {type:'tf',q:'Hyalis a reçu un dessin offert par un enfant lors de la journée portes ouvertes.',a:true,lore:'Hyalis reçoit un dessin offert par un enfant lors de l\'effervescence de la journée portes ouvertes dans la cour intérieure du château.'},
+    {type:'qcm',q:'Lors de la nuit du feu dans le ciel, qui l\'a vu en premier et est monté chez Elund ?',opts:['Maximus','Han-Yu','Corwin','Aelis'],a:3,lore:'Aelis voit la lumière en premier depuis la cour où elle s\'entraîne encore tard dans la nuit. Elle s\'élance aussitôt vers la tour d\'Elund.'},
+    {type:'qcm',q:'Comment Elund réagissait-il quand Aelis est entrée dans sa tour cette nuit-là ?',opts:['Il lui faisait signe de partir','Il murmurait pour lui-même, paniqué, le front luisant de sueur','Il invoquait une protection magique','Il envoyait un message au roi'],a:1,lore:'Elund ne l\'entend pas entrer. Il murmure pour lui-même, la main crispée sur sa lunette, le front luisant de sueur. Quand Aelis l\'interroge, les mots peinent à venir.'},
+    {type:'tf',q:'Wellan a plaqué Corwin contre le mur pour l\'empêcher de s\'en prendre à Kira.',a:true,lore:'C\'est Wellan qui arrête Corwin dans le couloir. D\'une main posée sur sa poitrine, il l\'immobilise. Les deux hommes se toisent. Puis Wellan le plaque contre le mur.'},
+    {type:'qcm',q:'Après la confrontation dans le couloir, que décide Wellan de faire le lendemain ?',opts:['Chasser Kira dès l\'aube','Aller voir le roi, puis Elund','Convoquer tous les Chevaliers pour voter','Écrire à la reine Fan'],a:1,lore:'Wellan admet à voix basse qu\'il n\'est plus tout à fait lui-même. Dès le lendemain, il ira voir le roi, puis Elund. On ne s\'en prend pas à un enfant.'},
+    {type:'qcm',q:'Que dit le roi en voyant le ciel depuis ses fenêtres, après la visite de Maximus ?',opts:['Il ordonne d\'évacuer le château','Il dit que des mesures seront prises dès le lendemain','Il déclare que Kira doit être renvoyée','Il réveille tous les Chevaliers'],a:1,lore:'Le roi écoute, observe le ciel, et dit simplement que des mesures seront prises dès le lendemain. Il demande à Maximus de s\'assurer que l\'enfant est en sécurité.'}
+  ]},
+  {id:'kira',label:'Kira & le Mystère',questions:[
+    {type:'qcm',q:'Comment est physiquement décrite Kira à son arrivée au château ?',opts:['Peau argentée, yeux rouges, cheveux blancs','Peau bleutée-violacée, yeux félins, petites griffes','Peau verte, oreilles pointues, yeux dorés','Peau noire, ailes translucides'],a:1,lore:'Aucun des Chevaliers présents n\'avait jamais rien vu de tel : une petite fille à la peau bleutée-violacée, aux yeux félins et aux petites griffes au bout des doigts.'},
+    {type:'qcm',q:'Quel âge a Kira lorsque la reine Fan la confie au roi d\'Émeraude ?',opts:['Quelques mois','Un an','Deux ans','Quatre ans'],a:2,lore:'La reine Fan sort de sous sa cape un enfant d\'à peine deux ans — dissimulé depuis le début de sa visite.'},
+    {type:'tf',q:'Le roi d\'Émeraude a immédiatement accepté de faire passer les tests à Kira sans objection.',a:false,lore:'Le roi objecte qu\'elle est bien trop jeune. La reine lui répond de ne pas la sous-estimer, et que si elle échoue, elle n\'aura qu\'à devenir sa servante.'},
+    {type:'qcm',q:'Comment Kira s\'est-elle échappée de son berceau et comment a-t-elle été rattrapée ?',opts:['Elle a marché jusqu\'à la porte','Elle a grimpé sur les murs, sauté de bannière en bannière — rattrapée par Hyalis','Elle a flotté jusqu\'au plafond — rattrapée par Elund','Elle s\'est faufilée par une fenêtre — rattrapée par Aelis'],a:1,lore:'Kira grimpe sur les murs, saute de bannière en bannière, insensible aux tentatives pour l\'attirer. Elle tombe d\'une bannière qui se déchire sous ses griffes et est finalement rattrapée par Hyalis, à qui l\'enfant s\'est visiblement attachée.'},
+    {type:'tf',q:'Elund a immédiatement reconnu en Kira une enfant prodige à accueillir dans l\'Ordre.',a:false,lore:'Elund, à sa vue, la désigne également comme un démon — Wellan doit le calmer. Corwin prononce des paroles pour tenter de l\'exorciser, ce qui le met en opposition directe avec Hyalis.'},
+    {type:'qcm',q:'Lors de la nuit du feu dans le ciel, comment Corwin trouve-t-il Kira en ouvrant sa porte ?',opts:['Endormie paisiblement','Debout dans son berceau, la main tendue vers le ciel, les yeux grands ouverts','En train de pleurer et d\'appeler sa mère','Assise par terre, dessinant des signes'],a:1,lore:'Corwin ouvre la porte de Kira — et la trouve debout dans son berceau, la main tendue vers le ciel, les yeux grands ouverts et fixes. Il s\'interpose, ferme le volet. L\'enfant éclate en sanglots.'},
+    {type:'qcm',q:'Quels mots Kira répète-t-elle en pleurant lors de la nuit du feu ?',opts:['Seule et peur','Mama et Shola','Feu et nuit','Fan et Émeraude'],a:1,lore:'Elle enfonce ses petites griffes dans le tissu du vêtement de Han-Yu, puis dans sa peau, et hurle. Un mot, encore et encore : Mama. Puis un autre : Shola.'},
+    {type:'qcm',q:'La reine Fan présente Kira comme sa fille. Comment réagit le père de Bran en apprenant son existence ?',opts:['Il dit qu\'il la connaît bien','Il est étonné, comme s\'il n\'en avait jamais entendu parler','Il affirme que Kira est un mensonge','Il reconnaît le nom et baisse la tête'],a:1,lore:'Même un noble d\'une ville frontière proche de Shola ignorait l\'existence de Kira — ce qui laisse planer un doute sur ce que la reine Fan a bien voulu dire au roi, et sur les véritables origines de l\'enfant.'}
+  ]},
+  {id:'candidats',label:'Les Candidats',questions:[
+    {type:'qcm',q:'Lors des épreuves physiques, Jaelys s\'est distingué par quel comportement ?',opts:['Une élégance remarquable','Une grande vitesse','Une énergie débordante, affrontant plusieurs adversaires simultanément avec violence','Une défense impénétrable'],a:2,lore:'Jaelys, grand et imposant, affronte plusieurs adversaires simultanément avec une énergie débordante. Il bat notamment Bran avec une telle violence que ce dernier chute lourdement et manque de se blesser.'},
+    {type:'qcm',q:'Qui a encouragé Björn à tenter sa chance lors des épreuves, alors qu\'il hésitait dans les escaliers ?',opts:['Han-Yu','Wellan','Thorvald','Aelis'],a:2,lore:'Thorvald avait croisé Björn dans les escaliers, hésitant à se lancer — son père à ses côtés. Il l\'encourage à tenter sa chance. Motivé, Björn entre finalement dans l\'arène.'},
+    {type:'tf',q:'Lors des épreuves magiques, Björn a produit de la lumière entre ses mains.',a:false,lore:'Björn produit de la chaleur lors des épreuves magiques. C\'est Newt qui génère de la lumière entre ses mains. Baelfire, lui, fait pousser une petite plante.'},
+    {type:'qcm',q:'Pourquoi Newt avait-il donné un faux nom au lieu d\'Auguste, son vrai prénom ?',opts:['Pour fuir la justice de son royaume','Pour ne pas vivre dans l\'ombre de son père ni être perçu comme un pion de l\'Inquisition','Sur ordre de Flavianus','Parce qu\'il avait peur du roi'],a:1,lore:'Newt finit par avouer à Corwin qu\'il s\'appelle en réalité Auguste, mais qu\'il a donné un faux nom pour ne pas vivre dans l\'ombre de son père ni être perçu comme un pion de l\'Inquisition. Corwin lui promet sa protection.'},
+    {type:'qcm',q:'Quel est le don particulier qui s\'est manifesté lors du test de magie pour la jeune voleuse ?',opts:['Faire pousser des plantes','Produire du feu','Attirer les pièces d\'or à elle','Générer de la lumière'],a:2,lore:'Maximus et Andreas Eyk font passer à la jeune voleuse un test de magie — elle semble capable d\'attirer les pièces d\'or à elle.'},
+    {type:'tf',q:'Lors du combat test, Jaelys a battu facilement la jeune voleuse.',a:false,lore:'Jaelys, poussé par Björn, se laisse emporter dans une violence soudaine, ce qui lui vaut de recevoir une dague en bois lancée entre les deux yeux suivie d\'un coup de poing bien placé — signant sa défaite.'},
+    {type:'qcm',q:'Qu\'a fait Jaelys lors des épreuves magiques, lui qui est incapable de magie ?',opts:['Il a quitté l\'épreuve sans un mot','Il a tenté de forcer magiquement le sable','Il a frappé le sable et tenté des châteaux de sable','Il a perturbé les autres candidats'],a:2,lore:'Jaelys, incapable de magie, se contente de frapper le sable et tenter des châteaux de sable lors de l\'épreuve magique d\'Elund.'},
+    {type:'qcm',q:'Qu\'a présenté Ichabod à Corwin dans la bibliothèque, liant peut-être Kira à des événements très anciens ?',opts:['Une carte de mouvements de troupes','Une lettre d\'un ancien roi de Cristal suppliant qu\'on lui amène l\'enfant bleu','Un livre de démonologie décrivant une créature identique','Un portrait d\'une enfant à la peau bleue'],a:1,lore:'Ichabod lui présente une lettre troublante : rédigée par un ancien roi de Cristal, elle suppliait le roi Jabe de lui amener "l\'enfant bleu", lors d\'invasions de créatures venues de l\'ouest par la mer, il y a plus de 500 ans.'}
+  ]},
+  {id:'nuit',label:'La Nuit du Feu',questions:[
+    {type:'qcm',q:'Comment est décrit le phénomène lumineux apparu dans le ciel ?',opts:['Une explosion bruyante au-dessus du château','Une traînée de feu lente et silencieuse glissant entre les étoiles vers le nord','Une pluie d\'étoiles filantes violettes','Une lumière verte surgissant du sol'],a:1,lore:'Une lumière traverse le ciel du nord. Lente, presque silencieuse — une traînée de feu qui glisse entre les étoiles, trop lumineuse pour être ignorée, trop lente pour être ordinaire. Elle disparaît quelque part à l\'horizon.'},
+    {type:'qcm',q:'Selon Elund, que représente dans les légendes elfiques le feu dans le ciel ?',opts:['Un présage de victoire et de gloire','L\'annonce du retour d\'un héros légendaire','L\'annonciateur des événements tragiques, son ombre portée sur le futur','Un phénomène naturel sans signification'],a:2,lore:'Dans les légendes elfiques, dans les mythologies les plus anciennes, le feu dans le ciel a toujours précédé les événements tragiques. Il en est l\'annonciateur. Son ombre portée sur le futur.'},
+    {type:'tf',q:'Aelis a réussi à stopper Corwin avant qu\'il n\'atteigne la chambre de Kira.',a:false,lore:'Aelis tente de l\'arrêter de toutes les façons possibles — elle le plaque au sol, s\'interpose dans les escaliers. Rien n\'y fait. C\'est finalement Wellan qui l\'arrête dans le couloir.'},
+    {type:'qcm',q:'Que murmure le roi dans son dos à Maximus alors que ce dernier s\'éloigne ?',opts:['"Nous devons renvoyer Kira à Shola."','"Elund... tu avais donc raison."','"Prévenez Wellan immédiatement."','"Cette nuit changera tout."'],a:1,lore:'Alors que Maximus s\'éloigne dans le couloir, il entend le roi murmurer dans son dos — "Elund... tu avais donc raison."'},
+    {type:'tf',q:'Han-Yu a réussi à calmer complètement Kira après l\'avoir prise dans ses bras.',a:false,lore:'Han-Yu tente de l\'apaiser. Elle n\'y parvient pas vraiment. Mais elle reste. Kira enfonce ses petites griffes dans le tissu de son vêtement, puis dans sa peau, et hurle.'},
+    {type:'qcm',q:'À quelle heure approximative se déroule la nuit du feu ?',opts:['Minuit passé','Vers vingt-trois heures','Aux premières heures du matin','Vers vingt et une heures'],a:1,lore:'La nuit est tombée sur le château d\'Émeraude depuis plusieurs heures déjà. Il est environ vingt-trois heures quand Corwin monte la garde devant la chambre de Kira.'},
+    {type:'qcm',q:'Que faisait Aelis au moment où la lumière traverse le ciel ?',opts:['Elle dormait dans sa chambre','Elle discutait avec Wellan','Elle s\'entraînait encore dans la cour','Elle montait la garde avec Corwin'],a:2,lore:'Dans la cour intérieure, Aelis s\'entraîne encore, son souffle formant de légères volutes dans l\'air frais de la nuit. C\'est elle qui voit la lumière en premier.'},
+    {type:'tf',q:'Après la confrontation, Maximus et Aelis prennent position de chaque côté de la porte de Kira pour veiller.',a:true,lore:'Maximus et Aelis prennent position de chaque côté de la porte. Ils veilleront. Wellan s\'accorde avec Maximus : l\'enfant représente peut-être un danger, mais on ne s\'en prend pas à un enfant.'}
+  ]}
+];
+
+let selectedTheme='all',questions=[],currentIdx=0,score=0,userAnswers=[],activeThemeLabel='Tout le lore';
+
+const tg=document.getElementById('theme-grid');
+const allBtn=document.createElement('button');
+allBtn.className='theme-btn sel';allBtn.innerHTML='<strong>Tout le lore</strong>';
+allBtn.onclick=()=>sel(allBtn,'all','Tout le lore');
+tg.appendChild(allBtn);
+THEMES.forEach(t=>{
+  const b=document.createElement('button');b.className='theme-btn';
+  b.innerHTML=`<strong>${t.label}</strong>`;
+  b.onclick=()=>sel(b,t.id,t.label);
+  tg.appendChild(b);
+});
+
+function sel(btn,id,label){document.querySelectorAll('.theme-btn').forEach(x=>x.classList.remove('sel'));btn.classList.add('sel');selectedTheme=id;activeThemeLabel=label;}
+
+function startQuiz(){
+  let pool=[];
+  if(selectedTheme==='all')THEMES.forEach(t=>pool.push(...t.questions.map(q=>({...q,theme:t.label}))));
+  else{const t=THEMES.find(x=>x.id===selectedTheme);if(t)pool=t.questions.map(q=>({...q,theme:t.label}));}
+  questions=pool.sort(()=>Math.random()-.5).slice(0,8);
+  currentIdx=0;score=0;userAnswers=[];
+  document.getElementById('panel-start').style.display='none';
+  document.getElementById('panel-quiz').style.display='block';
+  renderQ();
+}
+
+function renderQ(){
+  const q=questions[currentIdx],total=questions.length;
+  document.getElementById('prog-count').textContent=(currentIdx+1)+' / '+total;
+  document.getElementById('prog-fill').style.width=((currentIdx/total)*100)+'%';
+  document.getElementById('q-tag').textContent=q.theme||'';
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('feedback').className='feedback';
+  document.getElementById('next-btn').className='next-btn';
+  const zone=document.getElementById('answers-zone');zone.innerHTML='';
+  if(q.type==='qcm')renderQCM(q,zone);else renderTF(q,zone);
+}
+
+function renderQCM(q,zone){
+  const letters=['A','B','C','D'];
+  const shuffled=q.opts.map((o,i)=>({text:o,orig:i})).sort(()=>Math.random()-.5);
+  const div=document.createElement('div');div.className='options';
+  shuffled.forEach((opt,i)=>{
+    const btn=document.createElement('button');btn.className='opt';
+    btn.innerHTML=`<span class="opt-letter">${letters[i]}</span><span>${opt.text}</span>`;
+    btn.onclick=()=>{
+      div.querySelectorAll('.opt').forEach(b=>b.disabled=true);
+      const correct=opt.orig===q.a;
+      btn.classList.add(correct?'correct':'wrong');
+      if(!correct)shuffled.forEach((o,j)=>{if(o.orig===q.a)div.querySelectorAll('.opt')[j].classList.add('reveal');});
+      showFeedback(correct,q.lore);
+    };
+    div.appendChild(btn);
+  });
+  zone.appendChild(div);
+}
+
+function renderTF(q,zone){
+  const div=document.createElement('div');div.className='tf-wrap';
+  [{label:'Vrai',val:true},{label:'Faux',val:false}].forEach(opt=>{
+    const btn=document.createElement('button');btn.className='tf-btn';btn.textContent=opt.label;
+    btn.onclick=()=>{
+      div.querySelectorAll('.tf-btn').forEach(b=>b.disabled=true);
+      const correct=opt.val===q.a;
+      btn.classList.add(correct?'correct':'wrong');
+      if(!correct)div.querySelectorAll('.tf-btn').forEach(b=>{if(b!==btn)b.classList.add('reveal');});
+      showFeedback(correct,q.lore);
+    };
+    div.appendChild(btn);
+  });
+  zone.appendChild(div);
+}
+
+function showFeedback(correct,lore){
+  if(correct)score++;
+  userAnswers.push(correct);
+  const fb=document.getElementById('feedback');
+  fb.className='feedback show '+(correct?'ok':'nok');
+  document.getElementById('fb-verdict').textContent=correct?'✦ Juste':'✗ Faux';
+  document.getElementById('fb-main').textContent=correct?'Tu te souviens bien des chroniques du royaume.':'Les archives du château te corrigent.';
+  document.getElementById('fb-lore').textContent=lore;
+  const nb=document.getElementById('next-btn');nb.className='next-btn show';
+  nb.textContent=currentIdx===questions.length-1?'Voir le résultat du parchemin →':'Question suivante →';
+}
+
+function nextQ(){currentIdx++;if(currentIdx>=questions.length)showEnd();else renderQ();}
+
+const MEDALS=['✗','✗','✗','✦','✦✦','✦✦✦','✦✦✦✦','✦✦✦✦✦','⚔'];
+function buildShareText(sc,total,label,ans){
+  const pips=ans.map(a=>a?'■':'□').join('');
+  const medal=MEDALS[Math.min(sc,8)];
+  const date=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long'});
+  return `⚜ Chevaliers d'Émeraude — Parchemin du Lore\n${medal}  ${sc}/${total} — ${label}\n${pips}\n📜 ${date}`;
+}
+
+function showEnd(){
+  document.getElementById('panel-quiz').style.display='none';
+  document.getElementById('panel-end').style.display='block';
+  document.getElementById('end-score').textContent=score;
+  document.getElementById('end-total').textContent='/ '+questions.length+' réponses justes';
+  const pipsEl=document.getElementById('end-pips');pipsEl.innerHTML='';
+  userAnswers.forEach(a=>{const p=document.createElement('div');p.className='pip '+(a?'ok':'nok');pipsEl.appendChild(p);});
+  const pct=score/questions.length;
+  document.getElementById('end-quote').textContent=
+    pct===1?'Chaque parchemin des archives te parle comme si tu l\'avais écrit.':
+    pct>=.75?'Tu connais bien les ombres et les lumières de ce royaume. Quelques pages te restent encore à déchiffrer.':
+    pct>=.5?'Le château d\'Émeraude garde encore quelques secrets pour toi. Continue de lire les chroniques.':
+    'Les événements du royaume te sont encore peu familiers. Les archives attendent.';
+  document.getElementById('share-text').textContent=buildShareText(score,questions.length,activeThemeLabel,userAnswers);
+  document.getElementById('copy-btn').textContent='Copier le parchemin';
+  document.getElementById('copy-btn').classList.remove('copied');
+  const bd=document.getElementById('end-breakdown');bd.innerHTML='';
+  questions.forEach((q,i)=>{
+    const row=document.createElement('div');row.className='bd-row';
+    const short=q.q.length>60?q.q.slice(0,60)+'…':q.q;
+    row.innerHTML=`<span>${short}</span><span class="${userAnswers[i]?'bd-ok':'bd-nok'}">${userAnswers[i]?'✦':'✗'}</span>`;
+    bd.appendChild(row);
+  });
+}
+
+function copyShare(){
+  const text=document.getElementById('share-text').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-btn');
+    btn.textContent='✦ Copié dans les archives !';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copier le parchemin';btn.classList.remove('copied');},2500);
+  }).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    const btn=document.getElementById('copy-btn');btn.textContent='✦ Copié !';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copier le parchemin';btn.classList.remove('copied');},2500);
+  });
+}
+
+function backToStart(){document.getElementById('panel-end').style.display='none';document.getElementById('panel-start').style.display='block';}
+</script>
+</body>
+</html>
